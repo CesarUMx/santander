@@ -1,0 +1,22 @@
+const academicService = require('../services/academic.service');
+const { successResponse, errorResponse } = require('../utils/response.util');
+const { mapToCredential } = require('../utils/credential.mapper');
+
+class StudentController {
+  async getStudentInfo(req, res) {
+    try {
+      const { email, matricula } = req.user;
+
+      const academicData = await academicService.getStudentByMatricula(matricula);
+
+      const credential = mapToCredential(academicData);
+
+      return successResponse(res, credential, 'Información del estudiante obtenida correctamente');
+
+    } catch (error) {
+      return errorResponse(res, 'Error al obtener información del estudiante', 500, error.message);
+    }
+  }
+}
+
+module.exports = new StudentController();

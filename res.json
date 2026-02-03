@@ -1,0 +1,39 @@
+const credential = {
+  person: { 
+    personName: { 
+      givenName: data->informacion[0]->nombre || '',
+      lastName: data->informacion[0]->apellido_paterno || '',
+      secondLastName: data->informacion[0]->apellido_materno || '',
+    },
+    contactPoint: { 
+      telephone: data->informacion[0]->informacion_contacto->telefono_movil || '',
+      emailAddress: data->informacion[0]->informacion_contacto->correo_electronico || '', 
+    },
+    document: { 
+      documentNumber: data->informacion[0]->curp || '', // validar formato de curp si noe s correcto permitir pero la vandera es false
+      issuerEntityCountry: data->informacion[0]->informacion_nacimiento->nacionalidad || 'MX', // convertirlo en Alphe-2
+      documentType: 'curp' || '', // por defecto curp pero si la bandera del validaro del curp es false, entonces no se envía dni
+    },
+    nationality: {
+      countryCode: academicData->informacion[0]->informacion_nacimiento->nacionalidad || 'Mexicana', // convertirlo en Alphe-2
+    },
+    birthDate: academicData->informacion[0]->informacion_nacimiento->fecha || '', 
+  },
+
+  userUniversities: { 
+    userId: academicData->informacion[0]->id || '', 
+    creationDate: academicData->informacion[0]->fecha_ingreso || '', 
+    userImage: { 
+      url: academicData->informacion[0]->foto || '', 
+    },
+    courses: academicData->informacion[0]->inscripcion_administrativa->oferta_educativa->nombre || '',
+    university: { 
+      universityId: '633ea65b-8453-42a9-b647-bdb13c02a68c', // variable de entorno
+    },
+  },
+
+  userNotificationsGroups: {
+    mandatory: ['student'], // OBLIGATORIO | ENUM: student, services, professor, alumni, online_student, tester 
+    optional: [],
+  },
+};
