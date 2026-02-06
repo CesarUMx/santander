@@ -11,7 +11,7 @@ class StudentController {
 
       const credential = mapToCredential(academicData);
 
-      return successResponse(res, credential, 'Información del estudiante obtenida correctamente');
+      return res.status(200).json(credential);
 
     } catch (error) {
       return errorResponse(res, 'Error al obtener información del estudiante', 500, error.message);

@@ -29,6 +29,28 @@ const validateCURP = (curp) => {
   };
 };
 
+const getCourseType = (courseName) => {
+  if (!courseName || typeof courseName !== 'string') {
+    return 'other';
+  }
+
+  const normalized = courseName.trim().toUpperCase();
+
+  if (normalized.startsWith('LICENCIATURA')) {
+    return 'degree';
+  } else if (normalized.startsWith('MAESTRÍA') || normalized.startsWith('MAESTRIA')) {
+    return 'master';
+  } else if (normalized.startsWith('DOCTORADO')) {
+    return 'doctorate';
+  } else if (normalized === 'BACHILLERATO GENERAL' || normalized.startsWith('BACHILLERATO')) {
+    return 'high school';
+  } else if (normalized.startsWith('DIPLOMADO')) {
+    return 'other';
+  }
+
+  return 'other';
+};
+
 const convertToAlpha2 = (countryName) => {
   console.log('\n========== CONVERSIÓN A ALPHA-2 ==========');
   console.log('País recibido:', countryName);
@@ -48,17 +70,11 @@ const convertToAlpha2 = (countryName) => {
   }
   
   const result = alpha2Code || 'MX';
-  console.log('País normalizado:', normalized);
-  console.log('Código Alpha-2:', result);
-  console.log('==========================================\n');
   
   return result;
 };
 
 const mapToCredential = (academicData) => {
-  console.log('\n==========================================');
-  console.log('INICIANDO MAPEO DE CREDENCIALES');
-  console.log('==========================================');
   
   const informacion = academicData?.informacion?.[0] || {};
   const informacionContacto = informacion?.informacion_contacto || {};
@@ -66,22 +82,16 @@ const mapToCredential = (academicData) => {
   const inscripcionAdministrativa = informacion?.inscripcion_administrativa || {};
   const ofertaEducativa = inscripcionAdministrativa?.oferta_educativa || {};
 
-  console.log('\nDatos extraídos de la API:');
-  console.log('- Nombre:', informacion.nombre);
-  console.log('- Apellido Paterno:', informacion.apellido_paterno);
-  console.log('- Apellido Materno:', informacion.apellido_materno);
-  console.log('- CURP:', informacion.curp);
-  console.log('- Nacionalidad:', informacionNacimiento.nacionalidad);
-  console.log('- Teléfono:', informacionContacto.telefono_movil);
-  console.log('- Email:', informacionContacto.correo_electronico);
-  console.log('- Fecha Nacimiento:', informacionNacimiento.fecha);
-  console.log('- ID Usuario:', informacion.id);
-  console.log('- Fecha Ingreso:', informacion.fecha_ingreso);
-  console.log('- Foto:', informacion.foto);
-  console.log('- Curso:', ofertaEducativa.nombre);
-
   const curpValidation = validateCURP(informacion.curp);
   const nationalityAlpha2 = convertToAlpha2(informacionNacimiento.nacionalidad);
+  
+  const courseName = ofertaEducativa.nombre || '';
+  const courseType = getCourseType(courseName);
+  
+  console.log('\n========== TIPO DE CURSO ==========');
+  console.log('Nombre del curso:', courseName);
+  console.log('Tipo asignado:', courseType);
+  console.log('===================================\n');
 
   const credential = {
     person: {
@@ -105,27 +115,29 @@ const mapToCredential = (academicData) => {
       birthDate: informacionNacimiento.fecha || '',
     },
 
-    userUniversities: {
-      userId: informacion.id || '',
-      creationDate: informacion.fecha_ingreso || '',
-      userImage: {
-        url: informacion.foto || '',
+    userUniversities:[
+      {
+        userId: String(informacion.id || ''),
+        creationDate: informacion.fecha_ingreso || '',
+        userImage: {
+          url: informacion.foto || '',
+        },
+        courses: [
+          {
+            name: courseName,
+            type: courseType
+          }
+        ],
+        university: {
+          universityId: config.universityId,
+        },
       },
-      courses: ofertaEducativa.nombre || '',
-      university: {
-        universityId: config.universityId,
-      },
-    },
-
+    ],
     userNotificationsGroups: {
       mandatory: ['student'],
       optional: [],
     },
   };
-
-  console.log('\n========== CREDENCIAL MAPEADA ==========');
-  console.log(JSON.stringify(credential, null, 2));
-  console.log('==========================================\n');
 
   return credential;
 };
@@ -134,4 +146,5 @@ module.exports = {
   mapToCredential,
   validateCURP,
   convertToAlpha2,
+  getCourseType,
 };
