@@ -87,11 +87,6 @@ const mapToCredential = (academicData) => {
   
   const courseName = ofertaEducativa.nombre || '';
   const courseType = getCourseType(courseName);
-  
-  console.log('\n========== TIPO DE CURSO ==========');
-  console.log('Nombre del curso:', courseName);
-  console.log('Tipo asignado:', courseType);
-  console.log('===================================\n');
 
   const credential = {
     person: {
@@ -101,7 +96,7 @@ const mapToCredential = (academicData) => {
         secondLastName: informacion.apellido_materno || '',
       },
       contactPoint: {
-        telephone: informacionContacto.telefono_movil || '',
+        ...(informacionContacto.telefono_movil && { telephone: informacionContacto.telefono_movil }),
         emailAddress: informacionContacto.correo_electronico || '',
       },
       document: {
@@ -120,7 +115,7 @@ const mapToCredential = (academicData) => {
         userId: String(informacion.id || ''),
         creationDate: informacion.fecha_ingreso || '',
         userImage: {
-          url: informacion.foto || '',
+          url: informacion.foto || `${config.serverUrl}${config.defaultAvatar}`,
         },
         courses: [
           {
@@ -128,6 +123,9 @@ const mapToCredential = (academicData) => {
             type: courseType
           }
         ],
+        role: {
+          name: "Student"
+        },
         university: {
           universityId: config.universityId,
         },
