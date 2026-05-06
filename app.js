@@ -7,6 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/public', express.static('public'));
 
 app.get('/health', (req, res) => {
     res.status(200).json({ 
@@ -31,6 +32,10 @@ app.get('/', (req, res) => {
 // Rutas
 const studentRoutes = require('./src/routes/student.routes');
 app.use('/api', studentRoutes);
+
+// Rutas de pago MIT Webpay PLUS
+const paymentRoutes = require('./src/routes/payment.routes');
+app.use('/api', paymentRoutes);
 
 //ruta no encontrada 
 app.use((req, res) => {
