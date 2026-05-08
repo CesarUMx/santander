@@ -4,7 +4,7 @@ const config = {
   port: process.env.PORT || 3000,
   nodeEnv: process.env.NODE_ENV || 'development',
   universityId: process.env.UNIVERSITY_ID,
-  serverUrl: process.env.SERVER_URL || `http://localhost:${process.env.PORT || 3000}`,
+  serverUrl: `https://integradores.mondragonmexico.edu.mx`,
   defaultAvatar: '/public/DragobertoHEAD.png',
   academicAPI: {
     baseURL: process.env.ACADEMIC_API_URL || 'https://apis.academic.lat/v3',

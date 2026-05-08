@@ -93,7 +93,7 @@ const mapToCredential = (academicData) => {
       personName: {
         givenName: informacion.nombre || '',
         lastName: informacion.apellido_paterno || '',
-        secondLastName: informacion.apellido_materno || '',
+        ...(informacion.apellido_materno && { secondLastName: informacion.apellido_materno }),
       },
       contactPoint: {
         ...(informacionContacto.telefono_movil && { telephone: informacionContacto.telefono_movil }),
