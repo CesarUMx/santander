@@ -29,6 +29,11 @@ class GoogleService {
     const matricula = email.split('@')[0];
     return matricula;
   }
+
+  getPictureFromToken(token) {
+    const decoded = this.decodeToken(token);
+    return decoded.picture || null;
+  }
 }
 
 module.exports = new GoogleService();

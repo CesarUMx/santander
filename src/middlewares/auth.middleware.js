@@ -15,10 +15,12 @@ const validateGoogleToken = (req, res, next) => {
 
     const email = googleService.getEmailFromToken(token);
     const matricula = googleService.getMatriculaFromEmail(email);
+    const picture = googleService.getPictureFromToken(token);
 
     req.user = {
       email,
       matricula,
+      picture,
       token
     };
 

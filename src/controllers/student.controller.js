@@ -1,15 +1,15 @@
 const academicService = require('../services/academic.service');
-const { successResponse, errorResponse } = require('../utils/response.util');
+const { errorResponse } = require('../utils/response.util');
 const { mapToCredential } = require('../utils/credential.mapper');
 
 class StudentController {
   async getStudentInfo(req, res) {
     try {
-      const { email, matricula } = req.user;
+      const { email, matricula, picture } = req.user;
 
       const academicData = await academicService.getStudentByMatricula(matricula);
 
-      const credential = mapToCredential(academicData);
+      const credential = mapToCredential(academicData, picture, email);
 
       return res.status(200).json(credential);
 

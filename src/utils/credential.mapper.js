@@ -74,7 +74,7 @@ const convertToAlpha2 = (countryName) => {
   return result;
 };
 
-const mapToCredential = (academicData) => {
+const mapToCredential = (academicData, googlePicture = null, email = null) => {
   
   const informacion = academicData?.informacion?.[0] || {};
   const informacionContacto = informacion?.informacion_contacto || {};
@@ -97,7 +97,7 @@ const mapToCredential = (academicData) => {
       },
       contactPoint: {
         ...(informacionContacto.telefono_movil && { telephone: informacionContacto.telefono_movil }),
-        emailAddress: informacionContacto.correo_electronico || '',
+        emailAddress: email || informacionContacto.correo_electronico || '',
       },
       document: {
         documentNumber: curpValidation.curp,
@@ -115,7 +115,7 @@ const mapToCredential = (academicData) => {
         userId: String(informacion.id || ''),
         creationDate: informacion.fecha_ingreso || '',
         userImage: {
-          url: informacion.foto || `${config.serverUrl}${config.defaultAvatar}`,
+          url: informacion.foto || googlePicture || `${config.serverUrl}${config.defaultAvatar}`,
         },
         courses: [
           {
